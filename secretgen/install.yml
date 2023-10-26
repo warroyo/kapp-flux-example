@@ -14,7 +14,7 @@ rules:
 - apiGroups:
   - "source.toolkit.fluxcd.io"
   resources:
-  - GitRepository
+  - gitrepositories
   verbs:
   - get
   - list
