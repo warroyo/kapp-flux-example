@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: input-resource-reader
+  name: kapp-flux-reader
   namespace: tanzu-continuousdelivery-resources
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: input-resource-reader
+  name: kapp-flux-reader
   namespace: tanzu-continuousdelivery-resources
 rules:
 - apiGroups:
@@ -23,15 +23,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: input-resource-reader
+  name: kapp-flux-reader
   namespace: tanzu-continuousdelivery-resources
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: input-resource-reader
+  name: kapp-flux-reader
 subjects:
 - kind: ServiceAccount
-  name: input-resource-reader
+  name: kapp-flux-reader
 
 ---
 apiVersion: secretgen.carvel.dev/v1alpha1
@@ -40,7 +40,7 @@ metadata:
   name: kapp-flux-repo
   namespace: tanzu-continuousdelivery-resources
 spec:
-  serviceAccountName: input-resource-reader # used to fetch input resources
+  serviceAccountName: kapp-flux-reader # used to fetch input resources
   inputResources:
   - name: kapp-flux-repo
     ref:
