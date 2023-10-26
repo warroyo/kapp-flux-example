@@ -37,7 +37,7 @@ spec:
   serviceAccountName: default-ns-sa
   fetch:
   - http:
-      url: ${artifact_url} #this comes from the flux inject variable from the generated secret
+      url: ${artifactUrl} #this comes from the flux inject variable from the generated secret
       subPath: simple-app
   template:
   - ytt: {}
