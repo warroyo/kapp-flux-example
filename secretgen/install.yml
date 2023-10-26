@@ -50,7 +50,7 @@ spec:
   template:
     type: generic
     stringData:
-      artifactUrl: $(.status.artifact.url)
+      artifactUrl: $(.kapp-flux-repo.status.artifact.url)
 ---
 apiVersion: secretgen.carvel.dev/v1alpha1
 kind: SecretExport
