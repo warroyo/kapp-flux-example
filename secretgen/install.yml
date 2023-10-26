@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: input-resource-reader
+  namespace: tanzu-continuousdelivery-resources
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: input-resource-reader
+  namespace: tanzu-continuousdelivery-resources
+rules:
+- apiGroups:
+  - "source.toolkit.fluxcd.io"
+  resources:
+  - GitRepository
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: input-resource-reader
+  namespace: tanzu-continuousdelivery-resources
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: input-resource-reader
+subjects:
+- kind: ServiceAccount
+  name: input-resource-reader
+
+---
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretTemplate
+metadata:
+  name: kapp-flux-repo
+  namespace: tanzu-continuousdelivery-resources
+spec:
+  serviceAccountName: input-resource-reader # used to fetch input resources
+  inputResources:
+  - name: kapp-flux-repo
+    ref:
+      apiVersion: source.toolkit.fluxcd.io/v1beta2
+      kind: GitRepository
+      name: kapp-flux
+  template:
+    type: generic
+    stringData:
+      artifactUrl: $(.status.artifact.url)
+---
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretExport
+metadata:
+  name: cluster-name-secret
+  namespace: tanzu-continuousdelivery-resources
+spec:
+  toNamespace: '*'
+
+---
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretImport
+metadata:
+  name: cluster-name-secret
+  namespace: tanzu-continuousdelivery-resources
+spec:
+  fromNamespace: tanzu-continuousdelivery-resources
